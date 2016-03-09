@@ -6,7 +6,7 @@
 
   <parent>
     <groupId>org.hspconsortium.release</groupId>
-    <artifactId>hspc-release-spring-boot</artifactId>
+    <artifactId>hspc-release-spring-boot-dependencies</artifactId>
     <version>0.3</version>
   </parent>
 
