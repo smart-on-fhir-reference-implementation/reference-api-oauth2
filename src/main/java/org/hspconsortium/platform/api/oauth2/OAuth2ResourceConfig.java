@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 
 @Configuration
 @EnableResourceServer
@@ -61,11 +62,27 @@ public class OAuth2ResourceConfig extends ResourceServerConfigurerAdapter {
                         .addFilterBefore(corsFilter(), ChannelProcessingFilter.class)
                         .authorizeRequests()
                         .antMatchers(
-                                "/", "/health",
-                                "/data", "/data/metadata",
-                                "/data/_services/smart", "/data/_services/smart/**",
-                                "/data/_services/smart/terminology/**",
-                                "/data/_services/smart/federated/**").permitAll()
+                                "/", "/health").permitAll()
+                        .requestMatchers(
+                                // conformance statement
+                                new RegexRequestMatcher("\\/data\\/metadata", "GET"),
+                                // SMART endpoints
+                                new RegexRequestMatcher("\\/data\\/_services\\/smart\\/.*", "GET"),
+                                new RegexRequestMatcher("\\/data\\/_services\\/smart\\/.*", "POST"),
+                                // terminology proxy
+                                new RegexRequestMatcher("\\/terminology\\/.*", "GET"),
+                                // federated query (used for a HIMMS demo)
+                                new RegexRequestMatcher("\\/federated\\/.*", "GET")
+                        ).permitAll()
+                        .requestMatchers(
+                                // multitenant conformance statement
+                                // for example, /team1/data/metadata
+                                new RegexRequestMatcher("\\/\\w+\\/data\\/metadata", "GET"),
+                                // multitenant SMART endpoints
+                                // for example, /team1/data/_services/smart/Launch
+                                new RegexRequestMatcher("\\/\\w+\\/data\\/_services\\/smart\\/.*", "GET"),
+                                new RegexRequestMatcher("\\/\\w+\\/data\\/_services\\/smart\\/.*", "POST")
+                        ).permitAll()
                         // This level of security says that any other requests (all requests for FHIR resources)
                         // must be authenticated.  It does not determine if the user has access to the specific
                         // data according to scope and user role. That more granular level of provisioning should
