@@ -10,14 +10,14 @@
 
   <groupId>org.hspconsortium.reference</groupId>
   <artifactId>hspc-reference-api-oauth2</artifactId>
-  <version>0.10-SNAPSHOT</version>
+  <version>0.10</version>
   <packaging>jar</packaging>
 
   <scm>
     <connection>scm:git:ssh://git@bitbucket.org/hspconsortium/reference-api-oauth2.git</connection>
     <developerConnection>scm:git:ssh://git@bitbucket.org/hspconsortium/reference-api-oauth2.git</developerConnection>
     <url>https://bitbucket.org/hspconsortium/reference-api-oauth2.git</url>
-    <tag>HEAD</tag>
+    <tag>hspc-reference-api-oauth2-0.10</tag>
   </scm>
 
   <properties>
