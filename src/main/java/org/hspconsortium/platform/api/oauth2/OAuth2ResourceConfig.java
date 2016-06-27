@@ -24,6 +24,9 @@ public class OAuth2ResourceConfig extends ResourceServerConfigurerAdapter {
     @Value("${hspc.platform.api.security.mode}")
     private String securityMode;
 
+    @Value("${hspc.platform.api.fhir.contextPath:data}")
+    private String fhirContextPath;
+
     @Bean
     public AccessTokenConverter accessTokenConverter() {
         return new ScopeAsStringAccessTokenConverter();
@@ -65,10 +68,10 @@ public class OAuth2ResourceConfig extends ResourceServerConfigurerAdapter {
                                 "/", "/health").permitAll()
                         .requestMatchers(
                                 // conformance statement
-                                new RegexRequestMatcher("\\/data\\/metadata", "GET"),
+                                new RegexRequestMatcher("\\/" + fhirContextPath + "\\/metadata", "GET"),
                                 // SMART endpoints
-                                new RegexRequestMatcher("\\/data\\/_services\\/smart\\/.*", "GET"),
-                                new RegexRequestMatcher("\\/data\\/_services\\/smart\\/.*", "POST"),
+                                new RegexRequestMatcher("\\/" + fhirContextPath + "\\/_services\\/smart\\/.*", "GET"),
+                                new RegexRequestMatcher("\\/" + fhirContextPath + "\\/_services\\/smart\\/.*", "POST"),
                                 // terminology proxy
                                 new RegexRequestMatcher("\\/terminology\\/.*", "GET"),
                                 // federated query (used for a HIMMS demo)
@@ -77,11 +80,11 @@ public class OAuth2ResourceConfig extends ResourceServerConfigurerAdapter {
                         .requestMatchers(
                                 // multitenant conformance statement
                                 // for example, /team1/data/metadata
-                                new RegexRequestMatcher("\\/\\w+\\/data\\/metadata", "GET"),
+                                new RegexRequestMatcher("\\/\\w+\\/" + fhirContextPath + "\\/metadata", "GET"),
                                 // multitenant SMART endpoints
                                 // for example, /team1/data/_services/smart/Launch
-                                new RegexRequestMatcher("\\/\\w+\\/data\\/_services\\/smart\\/.*", "GET"),
-                                new RegexRequestMatcher("\\/\\w+\\/data\\/_services\\/smart\\/.*", "POST")
+                                new RegexRequestMatcher("\\/\\w+\\/" + fhirContextPath + "\\/_services\\/smart\\/.*", "GET"),
+                                new RegexRequestMatcher("\\/\\w+\\/" + fhirContextPath + "\\/_services\\/smart\\/.*", "POST")
                         ).permitAll()
                         // This level of security says that any other requests (all requests for FHIR resources)
                         // must be authenticated.  It does not determine if the user has access to the specific
